@@ -1,0 +1,50 @@
+{
+	"ret": 1,
+	"apiver": 9,
+	"appid": "com.ypdan.ypdan",
+	"name": "ypdan",
+	"version": "1.0.0",
+	"version_id": 1,
+	"author": "sunlong",
+	"description": "监听QQ群消息并POST到指定接口",
+	"event": [
+		{
+			"name": "插件启用",
+			"function": "EVENT_ON_ENABLE",
+			"type": 1003,
+			"priority": 20000,
+			"id": 1003
+		},
+		{
+			"name": "群消息",
+			"function": "EVENT_ON_GROUP_MSG",
+			"type": 2,
+			"priority": 20000,
+			"id": 2
+		},
+		{
+			"name": "插件停用",
+			"function": "EVENT_ON_DISABLE",
+			"type": 1004,
+			"priority": 20000,
+			"id": 1004
+		},
+		{
+			"name": "酷Q启动",
+			"function": "EVENT_ON_START",
+			"type": 1001,
+			"priority": 20000,
+			"id": 1001
+		},
+		{
+			"name": "酷Q退出",
+			"function": "EVENT_ON_EXIT",
+			"type": 1002,
+			"priority": 20000,
+			"id": 1002
+		}
+	],
+	"auth": null,
+	"menu": [],
+	"status": []
+}
