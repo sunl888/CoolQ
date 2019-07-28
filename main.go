@@ -34,7 +34,7 @@ func init() {
 
 //go:generate cqcfg .
 // cqp: 名称: 优品单
-// cqp: 版本: 1.0.0:1
+// cqp: 版本: 1.1.0:1
 // cqp: 作者: 孙龙
 // cqp: 简介: 监听QQ群消息并POST到指定接口
 func main() {}
@@ -178,7 +178,7 @@ func notifyDingDing(fromGroup, fromQQ int64, msg, data string, template NotifyTy
 		printErr(3, errors.New("通知模板不存在"))
 	}
 	_, err := dingTalkClient.Execute(markdown)
-	checkErr(4, errors.New(fmt.Sprintf("发送消息失败，可能是淘宝禁止频繁请求钉钉接口; %+v", err)))
+	checkErr(4, err)
 }
 
 // 抛异常
