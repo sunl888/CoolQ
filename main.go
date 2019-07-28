@@ -93,8 +93,7 @@ func onGroupMsg(subType, msgID int32, fromGroup, fromQQ int64, fromAnonymous, ms
 	if response.StatusCode != http.StatusNoContent {
 		respData, err := ioutil.ReadAll(response.Body)
 		checkErr(2, err)
-		notifyDingDing(fromGroup, fromQQ, fmt.Sprintf("推送商品消息到优品单服务器失败; Err: %+v; Response: %+v",
-			err, string(respData)), msg, AppNotify)
+		notifyDingDing(fromGroup, fromQQ, fmt.Sprintf("推送商品消息到优品单服务器失败; StatusCode: %d, Response: %+v", response.StatusCode, string(respData)), msg, AppNotify)
 	}
 	_ = response.Body.Close()
 	return 0
