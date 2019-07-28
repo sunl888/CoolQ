@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"github.com/Tnze/CoolQ-Golang-SDK/cqp"
 	"github.com/wq1019/ding_talk"
+	"io/ioutil"
 	"net/http"
 	"sort"
 	"strconv"
@@ -53,7 +54,7 @@ func onEnable() int32 {
 	defer handleErr()
 	// 配置文件初始化
 	c, err := config.LoadConfig()
-	checkErr(err)
+	checkErr(-2, err)
 	conf = *c
 	// 钉钉客户端初始化
 	b := ding_talk.NewClient(conf.NotifyUrl)
@@ -78,21 +79,24 @@ func onGroupMsg(subType, msgID int32, fromGroup, fromQQ int64, fromAnonymous, ms
 		Timestamp:     time.Now().UnixNano() / 1e6,
 	}
 	pushGroupMessageJson, err := json.Marshal(pushGroupMessage)
-	checkErr(err)
-
+	checkErr(-1, err)
 	request, err := http.NewRequest(http.MethodPost, conf.MessageHandlerUrl, bytes.NewReader(pushGroupMessageJson))
-	checkErr(err)
+	checkErr(1, err)
 	defer request.Body.Close()
 
 	request.Header.Set("signature", signData(conf.Token, pushGroupMessage))
 	request.Header.Set("content-type", "application/json;charset=UTF-8")
 	response, err := http.DefaultClient.Do(request)
-	if err != nil || response.StatusCode != http.StatusOK {
-		notifyDingDing(fromGroup, fromQQ, fmt.Sprintf("推送商品消息到优品单服务器失败; Err: %+v; Response: %+v",
-			err, response), msg, AppNotify)
-	} else {
-		_ = response.Body.Close()
+	if err != nil {
+		notifyDingDing(fromGroup, fromQQ, fmt.Sprintf("推送商品消息到优品单服务器失败; Err: %+v", err), msg, AppNotify)
 	}
+	if response.StatusCode != http.StatusNoContent {
+		respData, err := ioutil.ReadAll(response.Body)
+		checkErr(2, err)
+		notifyDingDing(fromGroup, fromQQ, fmt.Sprintf("推送商品消息到优品单服务器失败; Err: %+v; Response: %+v",
+			err, string(respData)), msg, AppNotify)
+	}
+	_ = response.Body.Close()
 	return 0
 }
 
@@ -171,21 +175,21 @@ func notifyDingDing(fromGroup, fromQQ int64, msg, data string, template NotifyTy
 	case AppNotify:
 		markdown.Markdown.Text = fmt.Sprintf(notifyTemplate[template], fromGroup, fromQQ, msg, data, timeFormat(time.Now().Unix()))
 	default:
-		printErr(errors.New("通知模板不存在"))
+		printErr(3, errors.New("通知模板不存在"))
 	}
 	_, err := dingTalkClient.Execute(markdown)
-	checkErr(err)
+	checkErr(4, errors.New(fmt.Sprintf("发送消息失败，可能是淘宝禁止频繁请求钉钉接口; %+v", err)))
 }
 
 // 抛异常
-func checkErr(err error) {
+func checkErr(code int, err error) {
 	if err != nil {
-		printErr(err)
+		printErr(code, err)
 	}
 }
 
-func printErr(err error) {
-	cqp.AddLog(cqp.Error, "错误", err.Error())
+func printErr(code int, err error) {
+	cqp.AddLog(cqp.Error, fmt.Sprintf("错误 code:[%d]", code), err.Error())
 }
 
 func printInfo(msg string) {

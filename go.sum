@@ -1,7 +1,13 @@
 github.com/Tnze/CoolQ-Golang-SDK v0.0.0-20190723170611-44d95cc463db h1:9F6Q4q+ACzLFdeuBFnyTBOh9hZSytL1dGi75vZWxcxM=
 github.com/Tnze/CoolQ-Golang-SDK v0.0.0-20190723170611-44d95cc463db/go.mod h1:XIWgI6JgLDdHQVN7a2Zegsp5ucwP071+8enN2emd0zg=
-github.com/wq1019/ding_talk v0.0.0-20190727183925-7b9a86c01ab5 h1:cOdfbzqc61YegLf1y/tLQqlMNhKTBFyjq6T1G+dsAu4=
-github.com/wq1019/ding_talk v0.0.0-20190727183925-7b9a86c01ab5/go.mod h1:AmSFeylKcEjI7xRnjLM96ZoDFLxtcbxmy++CiU7PbjE=
+github.com/wq1019/ding_talk v0.0.0-20190727184357-61c5d07cf6ff h1:pErG3v/2iJiLppGIGnvQrYVlEM4+8eUui3o8Z2slltU=
+github.com/wq1019/ding_talk v0.0.0-20190727184357-61c5d07cf6ff/go.mod h1:AmSFeylKcEjI7xRnjLM96ZoDFLxtcbxmy++CiU7PbjE=
+github.com/wq1019/ding_talk v1.0.0 h1:zyPWhuFW1jjNpT45xbxalCe5hz8hCsC0wJdU+uE5Rq4=
+github.com/wq1019/ding_talk v1.0.0/go.mod h1:AmSFeylKcEjI7xRnjLM96ZoDFLxtcbxmy++CiU7PbjE=
+github.com/wq1019/ding_talk v1.0.1 h1:IcVWS+vHLLPSbbqClBj4jMcAljaRO8Pp7mPpdL5QVXc=
+github.com/wq1019/ding_talk v1.0.1/go.mod h1:AmSFeylKcEjI7xRnjLM96ZoDFLxtcbxmy++CiU7PbjE=
+github.com/wq1019/ding_talk v1.0.2 h1:ydiCEcI2IlKC1BC4teHooWrl+XoVsOujXfyi4jz+Y40=
+github.com/wq1019/ding_talk v1.0.2/go.mod h1:AmSFeylKcEjI7xRnjLM96ZoDFLxtcbxmy++CiU7PbjE=
 golang.org/x/text v0.3.2 h1:tW2bmiBqwgJj/UpqtC8EpXEZVYOwU0yG4iWbprSVAcs=
 golang.org/x/text v0.3.2/go.mod h1:bEr9sfX3Q8Zfm5fL9x+3itogRgK3+ptLWKqgva+5dAk=
 golang.org/x/tools v0.0.0-20180917221912-90fa682c2a6e/go.mod h1:n7NCudcB/nEzxVGmLbDWY5pfWTLqBcC2KZ6jyYvM4mQ=
