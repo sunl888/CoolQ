@@ -90,7 +90,10 @@ func sendMsg(pushGroupMessage PushGroupMessage) {
 	//	checkErr(2, err)
 	//	notifyDingDing(pushGroupMessage.QqGroupNumber, pushGroupMessage.SendQQ, fmt.Sprintf("推送商品消息到优品单服务器失败; StatusCode: %d, Response: %+v", response.StatusCode, string(respData)), msg, AppNotify)
 	//}
-	_ = response.Body.Close()
+
+	if response != nil && response.Body != nil {
+		_ = response.Body.Close()
+	}
 }
 
 func onGroupMsg(subType, msgID int32, fromGroup, fromQQ int64, fromAnonymous, msg string, font int32) int32 {
