@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"github.com/Tnze/CoolQ-Golang-SDK/cqp"
 	"github.com/wq1019/ding_talk"
-	"io/ioutil"
 	"net/http"
 	"sort"
 	"strconv"
@@ -82,14 +81,15 @@ func sendMsg(pushGroupMessage PushGroupMessage) {
 	request.Header.Set("signature", signData(conf.Token, &pushGroupMessage))
 	request.Header.Set("content-type", "application/json;charset=UTF-8")
 	response, err := http.DefaultClient.Do(request)
-	if err != nil {
-		notifyDingDing(pushGroupMessage.QqGroupNumber, pushGroupMessage.SendQQ, fmt.Sprintf("推送商品消息到优品单服务器失败; Err: %+v", err), msg, AppNotify)
-	}
-	if response.StatusCode != http.StatusNoContent {
-		respData, err := ioutil.ReadAll(response.Body)
-		checkErr(2, err)
-		notifyDingDing(pushGroupMessage.QqGroupNumber, pushGroupMessage.SendQQ, fmt.Sprintf("推送商品消息到优品单服务器失败; StatusCode: %d, Response: %+v", response.StatusCode, string(respData)), msg, AppNotify)
-	}
+	checkErr(2, err)
+	//if err != nil {
+	//	notifyDingDing(pushGroupMessage.QqGroupNumber, pushGroupMessage.SendQQ, fmt.Sprintf("推送商品消息到优品单服务器失败; Err: %+v", err), msg, AppNotify)
+	//}
+	//if response.StatusCode != http.StatusNoContent {
+	//	respData, err := ioutil.ReadAll(response.Body)
+	//	checkErr(2, err)
+	//	notifyDingDing(pushGroupMessage.QqGroupNumber, pushGroupMessage.SendQQ, fmt.Sprintf("推送商品消息到优品单服务器失败; StatusCode: %d, Response: %+v", response.StatusCode, string(respData)), msg, AppNotify)
+	//}
 	_ = response.Body.Close()
 }
 
