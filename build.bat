@@ -1,12 +1,22 @@
+:: 关闭控制台回显
+@echo off
+
+:: 酷Q的dev文件夹路径
+SET DevDir=
+if not exist "%DevDir%" mkdir "%DevDir%"
+
+:: 设置环境变量
 SET CGO_LDFLAGS=-Wl,--kill-at
 SET CGO_ENABLED=1
 SET GOOS=windows
 SET GOARCH=386
-go build -ldflags "-s -w" -buildmode=c-shared -o app.dll
+SET GOPROXY=https://goproxy.cn
 
-cqcfg.exe ./
+:: 生成app.json
+go generate
 
-SET DIR=%cd%
-MOVE %DIR%\app.dll D:\cq\dev\com.ypdan.ypdan
-MOVE %DIR%\app.json D:\cq\dev\com.ypdan.ypdan
-COPY %DIR%\config\*.json D:\cq\data\app\com.ypdan.ypdan
+:: 编译app.dll
+go build -buildmode=c-shared -o app.dll
+
+:: 把app.dll和app.json复制到酷Q的dev文件夹
+for %%f in (app.dll,app.json) do move %%f "%DevDir%\%%f" > nul

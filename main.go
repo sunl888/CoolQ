@@ -71,31 +71,36 @@ type PushGroupMessage struct {
 	Timestamp     int64  `json:"timestamp"`
 }
 
-func onGroupMsg(subType, msgID int32, fromGroup, fromQQ int64, fromAnonymous, msg string, font int32) int32 {
-	pushGroupMessage := &PushGroupMessage{
-		Body:          msg,
-		QqGroupNumber: fromGroup,
-		SendQQ:        fromQQ,
-		Timestamp:     time.Now().UnixNano() / 1e6,
-	}
+// 发送消息到 ypdan 服务
+func sendMsg(pushGroupMessage PushGroupMessage) {
 	pushGroupMessageJson, err := json.Marshal(pushGroupMessage)
 	checkErr(-1, err)
 	request, err := http.NewRequest(http.MethodPost, conf.MessageHandlerUrl, bytes.NewReader(pushGroupMessageJson))
 	checkErr(1, err)
 	defer request.Body.Close()
 
-	request.Header.Set("signature", signData(conf.Token, pushGroupMessage))
+	request.Header.Set("signature", signData(conf.Token, &pushGroupMessage))
 	request.Header.Set("content-type", "application/json;charset=UTF-8")
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
-		notifyDingDing(fromGroup, fromQQ, fmt.Sprintf("推送商品消息到优品单服务器失败; Err: %+v", err), msg, AppNotify)
+		notifyDingDing(pushGroupMessage.QqGroupNumber, pushGroupMessage.SendQQ, fmt.Sprintf("推送商品消息到优品单服务器失败; Err: %+v", err), msg, AppNotify)
 	}
 	if response.StatusCode != http.StatusNoContent {
 		respData, err := ioutil.ReadAll(response.Body)
 		checkErr(2, err)
-		notifyDingDing(fromGroup, fromQQ, fmt.Sprintf("推送商品消息到优品单服务器失败; StatusCode: %d, Response: %+v", response.StatusCode, string(respData)), msg, AppNotify)
+		notifyDingDing(pushGroupMessage.QqGroupNumber, pushGroupMessage.SendQQ, fmt.Sprintf("推送商品消息到优品单服务器失败; StatusCode: %d, Response: %+v", response.StatusCode, string(respData)), msg, AppNotify)
 	}
 	_ = response.Body.Close()
+}
+
+func onGroupMsg(subType, msgID int32, fromGroup, fromQQ int64, fromAnonymous, msg string, font int32) int32 {
+	pushGroupMessage := PushGroupMessage{
+		Body:          msg,
+		QqGroupNumber: fromGroup,
+		SendQQ:        fromQQ,
+		Timestamp:     time.Now().UnixNano() / 1e6,
+	}
+	go sendMsg(pushGroupMessage)
 	return 0
 }
 

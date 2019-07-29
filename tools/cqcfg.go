@@ -23,7 +23,7 @@
 //	cqcfg [插件main包所在目录]
 // 或者使用go generate工具，在项目目录下运行：
 //	go generate
-package tools
+package main
 
 import (
 	"encoding/json"
