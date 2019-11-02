@@ -11,7 +11,6 @@ import (
 type Config struct {
 	MessageHandlerUrl string `json:"message_handler_url"`
 	Token             string `json:"token"`
-	NotifyUrl         string `json:"notify_url"` // "notify_url": "https://oapi.dingtalk.com/robot/send?access_token=a36cf190b4021ff97964396f23d2986a83566fdd608bfd59d1d1979459c5c4b7",
 }
 
 func LoadConfig() (*Config, error) {

@@ -6,10 +6,8 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/Tnze/CoolQ-Golang-SDK/cqp"
-	"github.com/wq1019/ding_talk"
 	"net/http"
 	"sort"
 	"strconv"
@@ -39,8 +37,7 @@ func init() {
 func main() {}
 
 var (
-	conf           = config.Config{}
-	dingTalkClient = ding_talk.DingTalkClient{}
+	conf = config.Config{}
 )
 
 func onDisable() int32 {
@@ -55,9 +52,6 @@ func onEnable() int32 {
 	c, err := config.LoadConfig()
 	checkErr(-2, err)
 	conf = *c
-	// 钉钉客户端初始化
-	b := ding_talk.NewClient(conf.NotifyUrl)
-	dingTalkClient = *b
 
 	printInfo("插件被启用")
 	return 0
@@ -82,15 +76,6 @@ func sendMsg(pushGroupMessage PushGroupMessage) {
 	request.Header.Set("content-type", "application/json;charset=UTF-8")
 	response, err := http.DefaultClient.Do(request)
 	checkErr(2, err)
-	//if err != nil {
-	//	notifyDingDing(pushGroupMessage.QqGroupNumber, pushGroupMessage.SendQQ, fmt.Sprintf("推送商品消息到优品单服务器失败; Err: %+v", err), msg, AppNotify)
-	//}
-	//if response.StatusCode != http.StatusNoContent {
-	//	respData, err := ioutil.ReadAll(response.Body)
-	//	checkErr(2, err)
-	//	notifyDingDing(pushGroupMessage.QqGroupNumber, pushGroupMessage.SendQQ, fmt.Sprintf("推送商品消息到优品单服务器失败; StatusCode: %d, Response: %+v", response.StatusCode, string(respData)), msg, AppNotify)
-	//}
-
 	if response != nil && response.Body != nil {
 		_ = response.Body.Close()
 	}
@@ -141,53 +126,6 @@ func signData(signToken string, pushGroupMessage *PushGroupMessage) string {
 	)
 }
 
-func timeFormat(timeInt int64) string {
-	t := time.Unix(timeInt, 0)
-	return fmt.Sprintf("%d月%d日%d时%d分%d秒", t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second())
-}
-
-type NotifyType int
-
-const (
-	SystemNotify NotifyType = iota + 1
-	AppNotify
-)
-
-var (
-	notifyTemplate = map[NotifyType]string{
-		SystemNotify: "#### 酷Q监控通知\n" +
-			"> **Message:** %s\n\n" +
-			"> ###### %s发布 [优品单](https://ypdan.com) \n",
-
-		AppNotify: "#### 酷Q监控通知\n" +
-			"> **FromGroup:** %d\n\n" +
-			"> **FromQQ:** %d\n\n" +
-			"> **Message:** %s\n\n" +
-			"> **PostData:** %s\n\n" +
-			"> ###### %s发布 [优品单](https://ypdan.com) \n",
-	}
-)
-
-func notifyDingDing(fromGroup, fromQQ int64, msg, data string, template NotifyType) {
-	markdown := ding_talk.MarkdownMessage{
-		MsgType:  ding_talk.Markdown,
-		Markdown: ding_talk.MarkdownData{Title: "酷Q监控通知"},
-		At: &ding_talk.At{
-			IsAtAll: true,
-		},
-	}
-	switch template {
-	case SystemNotify:
-		markdown.Markdown.Text = fmt.Sprintf(notifyTemplate[template], msg, timeFormat(time.Now().Unix()))
-	case AppNotify:
-		markdown.Markdown.Text = fmt.Sprintf(notifyTemplate[template], fromGroup, fromQQ, msg, data, timeFormat(time.Now().Unix()))
-	default:
-		printErr(3, errors.New("通知模板不存在"))
-	}
-	_, err := dingTalkClient.Execute(markdown)
-	checkErr(4, err)
-}
-
 // 抛异常
 func checkErr(code int, err error) {
 	if err != nil {
@@ -201,7 +139,6 @@ func printErr(code int, err error) {
 
 func printInfo(msg string) {
 	cqp.AddLog(cqp.Info, "通知消息", msg)
-	notifyDingDing(0, 0, msg, "", SystemNotify)
 }
 
 func handleErr() {

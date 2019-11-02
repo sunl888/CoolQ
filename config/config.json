@@ -1,5 +1,4 @@
 {
   "message_handler_url": "http://dev.hn-zm.com:8081/health_check",
-  "notify_url": "https://oapi.dingtalk.com/robot/send?access_token=15ecbce02525359580fddc1ac846873023224c3eb398d574977e7d5bf6dc5517",
   "token": "zm2018"
 }
